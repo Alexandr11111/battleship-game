@@ -1,3 +1,3 @@
-run: npm install
+Run in console: npm install
 
-site path: localhost:3000
+Site path: localhost:3000

@@ -1,0 +1,53 @@
+<div class="page-header">
+	<h1 style="font-size: 3.4rem;"> Battleship </h1>
+</div>
+<div class="panel" *ngIf="!contentLoaded">
+	<h2 style="font-size: 6.4rem;"> Идёт загрузка...</h2>
+</div>
+<div class="panel" *ngIf="contentLoaded && !gameover">
+	<div  class="col-md-4">
+		<div class="row">
+			<div class="col-md-2"></div>
+			<div class="col-md-4 text-center" style="font-size: 2.4rem; background: orange;">
+				<div>{{userScore}}</div>
+				<hr>
+				Player 1
+			</div>
+			<div class="col-md-4 text-center" style="font-size: 2.4rem; background: green;">
+				<div>0</div>
+				<hr>
+				Player 2
+			</div>
+			<div class="col-md-2"></div>
+		</div>
+		<div class="col-md-12">
+			<div *ngFor="let ship of ships" class="row row-height row-eq-height" style="margin-top: 10%;">
+				<div class="col-md-6">
+					<img class="img-responsive" src="assets/{{ship.type}}.png">
+				</div>
+				<div class="col-md-6">
+					<div class="inside">
+						<div *ngFor="let life of ship.lives" class="col-md-2" style="padding: 0;">
+							<img class="img-responsive" style="width: 100%; padding-bottom: 100%;"  *ngIf="life.active == true" src="assets/miss_small.png" >
+							<img class="img-responsive" style="width: 100%; padding-bottom: 100%;"  *ngIf="life.active == false" src="assets/hit_small.png">
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div  class="col-md-4">
+		<div *ngFor="let row of grid" class="row row-height row-eq-height">
+			<div td *ngFor="let cell of row" class="col-height " style="width:10%; float: left;" >
+				<div class="inside">
+					<div class="content" style="height: auto;">
+						<button class="btn btn-default"  style="padding: 0;" [ngStyle]="{ 'width': '100%', 'padding-bottom': '100%', 'background-image': cell.background, 'background-size': '100% auto', 'background-repeat': 'no-repeat'}" (click)="checkClikedCell(cell)"></button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="panel" *ngIf="contentLoaded && gameover">
+	<h1 style="font-size: 30.4rem;"> YOU WIN!!! </h1>
+</div>
