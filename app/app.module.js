@@ -4,5 +4,6 @@ var AppModule = ng.core.NgModule({
     bootstrap: [AppComponent]
   })
   .Class({
-    constructor: function() { }
+    constructor: function() {
+    }
 });

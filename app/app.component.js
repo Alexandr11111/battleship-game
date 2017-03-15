@@ -21,7 +21,6 @@ function setEnemyShips() {
             shipPosition = positions[positionIter];
             for (rowIter in this.grid) {
                 row = this.grid[rowIter];
-                console.log("row: "+row.length);
                 for (cellIter in row) {
                     cell = row[cellIter];
                     if (cell.position.x == shipPosition[0] && cell.position.y == shipPosition[1]) {
@@ -133,48 +132,41 @@ Cell = {
     isClicked: Boolean,
     background: String
 }
- 
+
 var AppComponent = ng.core.Component({
     selector: 'my-app',
+    providers: [ShipService],
     templateUrl: 'app/app.component.html'
     })
   .Class({
-    constructor: function() {
+    constructor: [ShipService, function(ShipService) {
+this.ShipService = ShipService;
         this.contentLoaded = false;
         this.gameover = false;
         this.userScore = 0;
         this.grid = new Array();
         this.ships = new Array();
-        initGrid.call(this, 10, 10);
-        setShipTypes.call(this, data);
-        setEnemyShips.call(this);
-        this.contentLoaded = true;
-    }
-});
+        this.sessionId = ShipService.initGame()['sessionId'];
+        if (this.sessionId == null) {
+            this.gameover = true;
+        } else {
+            initGrid.call(this, 10, 10);
+            setShipTypes.call(this, data);
+            setEnemyShips.call(this);
+            this.contentLoaded = true;
+        }
+    }]
+})
+
+AppComponent.parameters = [
+    [new ng.core.Inject(ShipService)]
+  ];
 
 AppComponent.prototype.checkClikedCell = function (cell) {
-    console.log("checkClikedCell(): " + cell.ship);
-    if (cell.ship == null) {
+    response = this.ShipService.getClickCheck(this.sessionId, cell.position.y, cell.position.x);
+    if (response.hitStatus == null || response['hitStatus'] === false) {
         cell.background = 'url(assets/miss.png)';
     } else {
-        if (cell.ship.isAlive == true) {
-            cell.background = 'url(assets/hit.png)';
-            if (!reduseShipLife(cell.ship)) {
-                this.userScore++;
-                sunkShips=0;
-                for(shipIter in this.ships){
-                    if (!this.ships[shipIter].isAlive) {
-                        sunkShips++;
-                    }
-                }
-                if (sunkShips == this.ships.length) {
-                    this.gameover = true;
-                }
-
-                console.log("checkClikedCell(): " + cell.ship.type + " was sunk!");
-            } else {
-                console.log("checkClikedCell(): " + cell.ship.type + " was damaged!");
-            }
-        }
+        cell.background = 'url(assets/hit.png)';
     }
 }
